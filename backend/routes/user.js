@@ -4,6 +4,7 @@ const jwt = require("jsonwebtoken");
 const { User } = require('../model/db');
 const env = require('dotenv');
 const { default: errorMap } = require("zod/locales/en.js");
+const { authMiddleware } = require("../middleware/authmiddleware");
 env.config();
 
 const router = express.Router();
@@ -93,6 +94,58 @@ router.post('/signin', async (req, res) => {
     res.status(200).json({
         message: token
     });
+})
+
+// update user
+const updateInputValidate = zod.object({
+    password: zod.string().optional(),
+    firstname: zod.string().optional(),
+    lastname: zod.string().optional()
+})
+
+router.put('/', authMiddleware, async (req, res) => {
+    const {success} = updateInputValidate.safeParse(req.body);
+
+    if(!success) {
+        return res.status(411).json({
+            messahe: "Invalid Input! while Updating"
+        })
+    }
+
+    await User.updateOne({_id: req.userId}, req.body)
+
+    res.json({
+        message: "updated succesfully!"
+    })
+
+})
+
+
+// to get all the user 
+
+router.get('/bulk', async (req, res) => {
+    const filter = req.query.filter || "";
+
+    const users = await User.find({
+        $or: [{
+            firstname: {
+                "$regex": filter 
+            }
+        }, {
+            lastname: {
+                "$regex": filter
+            }
+        }]
+    })
+
+    res.json({
+        user: users.map((user) => ({
+            username: user.username,
+            firstname: user.firstname,
+            lastname: user.lastname,
+            _id: user._id
+        }))
+    })
 })
 
 module.exports = router;
