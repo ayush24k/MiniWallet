@@ -1,5 +1,5 @@
-import mongoose, { Types } from "mongoose";
-import env from "dotenv";
+const mongoose = require('mongoose');
+const env = require('dotenv');
 
 env.config();
 
