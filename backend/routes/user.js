@@ -1,7 +1,7 @@
 const express = require("express")
 const zod = require("zod");
 const jwt = require("jsonwebtoken");
-const { User } = require('../model/db');
+const { User, Account } = require('../model/db');
 const env = require('dotenv');
 const { default: errorMap } = require("zod/locales/en.js");
 const { authMiddleware } = require("../middleware/authmiddleware");
@@ -46,6 +46,15 @@ router.post('/signup', async (req, res)=> {
     });
 
     const userId = user._id;
+
+    // crete bank account for user
+
+    await Account.create({
+        userId: userId,
+        balance: 1 + Math.random() * 10000
+    })
+
+    //--------------------
 
     const token = jwt.sign({
         userId
