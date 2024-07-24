@@ -101,7 +101,7 @@ router.post('/signin', async (req, res) => {
     }, process.env.JWT_SECRET);
 
     res.status(200).json({
-        message: token
+        token: token
     });
 })
 
