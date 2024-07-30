@@ -129,6 +129,19 @@ router.put('/', authMiddleware, async (req, res) => {
 
 })
 
+// to get details of single user
+
+router.get('/details' , authMiddleware,  async(req, res) => {
+    const user = await User.findOne({
+        _id: req.userId
+    })
+
+    return res.json({
+        name: user.firstname,
+        email: user.username
+    })
+})
+
 
 // to get all the user 
 
