@@ -28,7 +28,7 @@ export default function Balance() {
     return (
         <div className="bg-slate-50">
             <div className="px-7 py-4">
-                Your Balance: {balance}
+                Your Balance: $ {balance}
             </div>
         </div>
     )
